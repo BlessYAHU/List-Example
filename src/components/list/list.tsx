@@ -11,7 +11,6 @@ export function List({
   listItemDomain: ListItemCollection;
 }) {
   const [listItems, setListItems] = useState([""]);
-  const [previousList, setPreviousList] = useState([""]);
   const [removedItem, setRemovedItem] = useState(NONE);
 
   useEffect(() => {
@@ -19,9 +18,8 @@ export function List({
   }, []);
 
   const removeItem = (itemIndexToRemove: number) => () => {
-    const { undoList, newList } = listItemDomain.removeItem(itemIndexToRemove);
-    setPreviousList(undoList);
     setRemovedItem(listItems[itemIndexToRemove]);
+    listItemDomain.removeItem(itemIndexToRemove);
     setListItems(listItemDomain.getItems());
   };
 
@@ -36,7 +34,8 @@ export function List({
   };
 
   const undoRemoval = () => {
-    setListItems(previousList);
+    listItemDomain.undoRemoveLastItem();
+    setListItems(listItemDomain.getItems());
     cancelUndo();
   };
 
