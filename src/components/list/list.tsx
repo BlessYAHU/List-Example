@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { ListItemCollection } from "./ListItems";
+import { ListItem } from "./listItem";
 
 const NONE = "";
 
@@ -23,6 +24,8 @@ export function List({
     setListItems(listItemDomain.getItems());
   };
 
+  const editItem = (itemIndexToRemove: number) => () => {};
+
   const addItem = (itemToAdd: string) => {
     listItemDomain.addItem(itemToAdd);
     setListItems(listItemDomain.getItems());
@@ -40,9 +43,17 @@ export function List({
   };
 
   const itms = listItems.map((item, index) => (
-    <li key={index}>
-      {item} <button onClick={removeItem(index)}>X</button>
-    </li>
+    <ListItem
+      onEditItem={editItem(index)}
+      onRemoveItem={removeItem(index)}
+      index={index}
+      itemContent={item}
+      key={index}
+    />
+    // <li key={index}>
+    //   {item} <button onClick={editItem(index)}>Edit</button>
+    //   <button onClick={removeItem(index)}>X</button>
+    // </li>
   ));
 
   return (
