@@ -13,7 +13,7 @@ const testItms = [
 export default function App() {
   return (
     <div className="App">
-      <Comp.List items={testItms} />
+      <Comp.List listItemDomain={Comp.ListItems(testItms)} />
     </div>
   );
 }
