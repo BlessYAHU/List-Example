@@ -24,7 +24,10 @@ export function List({
     setListItems(listItemDomain.getItems());
   };
 
-  const editItem = (itemIndexToRemove: number) => () => {};
+  const updateItem = (index: number, updatedItemContent: string) => () => {
+    listItemDomain.updateItem(index, updatedItemContent);
+    setListItems(listItemDomain.getItems());
+  };
 
   const addItem = (itemToAdd: string) => {
     listItemDomain.addItem(itemToAdd);
@@ -44,8 +47,8 @@ export function List({
 
   const itms = listItems.map((item, index) => (
     <ListItem
-      onEditItem={editItem(index)}
-      onRemoveItem={removeItem(index)}
+      onUpdateItem={updateItem}
+      onRemoveItem={removeItem}
       index={index}
       itemContent={item}
       key={index}
