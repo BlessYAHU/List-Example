@@ -3,11 +3,7 @@ interface ListItemCollection {
   getItems: () => string[];
   removeItem: (itemIndexToRemove: number) => void;
   undoRemoveLastItem: () => void;
-}
-
-interface removeItemResults {
-  undoList: string[];
-  newList: string[];
+  updateItem: (indexItemToUpdate: number, updatedContent: string) => void;
 }
 
 const ListItems = (initialItems: string[] = []): ListItemCollection => {
@@ -17,7 +13,6 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
 
   return {
     addItem: (item: string) => {
-      console.log("adding to ${items}", items);
       items = items.concat([item]);
     },
     getItems: (): string[] => {
@@ -27,11 +22,16 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
     removeItem: (itemIndexToRemove: number) => {
       previousItems = [...items];
       items = items.filter((x, index) => index !== itemIndexToRemove);
-
-      //return newList };
     },
     undoRemoveLastItem: () => {
       items = previousItems;
+    },
+    updateItem: (indexItemToUpdate: number, updatedContent: string) => {
+      previousItems = [...items];
+      items = items.map(
+        (item: string, index: number) =>
+          (item = index === indexItemToUpdate ? updatedContent : item)
+      );
     }
   };
 };
