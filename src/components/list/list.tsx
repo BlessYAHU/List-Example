@@ -52,6 +52,7 @@ export function List({
       index={index}
       itemContent={item}
       key={index}
+      onEditItem={cancelUndo}
     />
     // <li key={index}>
     //   {item} <button onClick={editItem(index)}>Edit</button>
