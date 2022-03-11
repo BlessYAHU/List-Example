@@ -23,7 +23,7 @@ export function ListItem({
         <li key={index}>
           <input
             type="search"
-            value={itemContent}
+            value={updatedItemContent}
             onChange={(evt) => setUpdatedItemContent(evt.target.value)}
           />{" "}
           <button onClick={updateItem}>Update</button>
