@@ -1,27 +1,41 @@
 import { useState } from "react";
+import { useMessageStream } from "../../hooks";
+import { RemoveItemMessage, EditItemMessage } from "../../types";
 
 export function ListItem({
   itemContent,
   index,
-  onRemoveItem,
-  onUpdateItem,
-  onEditItem
-}: {
+  //onRemoveItem,
+  onUpdateItem
+}: //onEditItem
+{
   itemContent: string;
   index: number;
-  onRemoveItem: (index: number) => () => void;
+  //onRemoveItem: (index: number) => () => void;
   onUpdateItem: (index: number, updatedItemContent: string) => () => void;
   onEditItem: () => void;
 }) {
+  const [removeData, setRemoveData] = useMessageStream<RemoveItemMessage>(
+    (x) => typeof x?.index !== "undefined"
+  );
+  const [editData, setEditData] = useMessageStream<EditItemMessage>(
+    (x) =>
+      typeof x?.index !== "undefined" &&
+      typeof x?.currentContent !== "undefined"
+  );
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
+  const handleRemove = (index: number) => () => setRemoveData({ index: index });
+  const handleEdit = () =>
+    setEditData({ index: index, currentContent: itemContent });
+
   const updateItem = () => {
     onUpdateItem(index, updatedItemContent)();
     setIsEditMode(false);
   };
 
   const editItem = () => {
-    onEditItem();
+    handleEdit();
     setIsEditMode(true);
   };
 
@@ -40,7 +54,7 @@ export function ListItem({
       ) : (
         <li key={index}>
           {itemContent} <button onClick={editItem}>Edit</button>
-          <button onClick={onRemoveItem(index)}>X</button>
+          <button onClick={handleRemove(index)}>X</button>
         </li>
       )}
     </>
