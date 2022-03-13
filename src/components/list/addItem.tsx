@@ -8,7 +8,7 @@ export function AddItem({
   addItemAction: (itemValue: string) => void;
 }) {
   const [addItemData, setAddItemData] = useMessageStream<AddItemMessage>(
-    (x) => typeof x?.ItemContent !== "undefined"
+    (x) => typeof x?.itemContent !== "undefined"
   );
   const [addItemValue, setAddItemValue] = useState("");
   const [isAddDisabled, setIsAddDisabled] = useState(true);
@@ -19,9 +19,8 @@ export function AddItem({
     setAddItemValue(evt.target.value);
   };
   const handleAddItem = (value: string) => () => {
-    //console.log('Adding ' + value);
-    setAddItemData({ itemContent: value });
-    //addItemAction(value);
+    console.log("Adding " + value);
+    //setAddItemData({ itemContent: value });
     setAddItemValue("");
     setIsAddDisabled(true);
   };

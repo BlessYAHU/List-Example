@@ -13,7 +13,7 @@ export function ListItem({
   index: number;
   //onRemoveItem: (index: number) => () => void;
   onUpdateItem: (index: number, updatedItemContent: string) => () => void;
-  onEditItem: () => void;
+  //onEditItem: () => void;
 }) {
   const [removeData, setRemoveData] = useMessageStream<RemoveItemMessage>(
     (x) => typeof x?.index !== "undefined"
