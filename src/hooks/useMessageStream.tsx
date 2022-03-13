@@ -11,7 +11,7 @@ const myData$ = new BehaviorSubject<any>(INITIAL);
 export function useMessageStream<T>(
   ftr: (x: any) => boolean,
   initial: T = {} as T
-) {
+): [T, (payload: T) => void] {
   const [data, _setData] = useState<T>(initial);
 
   useEffect(() => {

@@ -25,7 +25,10 @@ export function ListItem({
   );
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
-  const handleRemove = (index: number) => () => setRemoveData({ index: index });
+  const handleRemove = () => {
+    console.log("removing..." + index);
+    setRemoveData({ index: index, removeContent: itemContent });
+  };
   const handleEdit = () =>
     setEditData({ index: index, currentContent: itemContent });
 
@@ -54,7 +57,7 @@ export function ListItem({
       ) : (
         <li key={index}>
           {itemContent} <button onClick={editItem}>Edit</button>
-          <button onClick={handleRemove(index)}>X</button>
+          <button onClick={handleRemove}>X</button>
         </li>
       )}
     </>

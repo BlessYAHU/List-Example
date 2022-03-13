@@ -1,6 +1,6 @@
 export {
   RemoveItemMessage,
   UpdateItemMessage,
-  ItemMessage,
+  AddItemMessage,
   EditItemMessage
 } from "./ListEventMessages";

@@ -1,5 +1,6 @@
 export type RemoveItemMessage = {
   index: number;
+  removeContent: string;
 };
 
 export type UpdateItemMessage = {
@@ -7,10 +8,8 @@ export type UpdateItemMessage = {
   updatedContent: string;
 };
 
-export type ItemMessage = {
-  index: number;
-  contentToEdit: string;
-  updatedContent: string;
+export type AddItemMessage = {
+  itemContent: string;
 };
 
 export type EditItemMessage = {

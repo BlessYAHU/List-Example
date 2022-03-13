@@ -4,7 +4,11 @@ import { Footer } from "./footer";
 import { ListItemCollection } from "./ListItems";
 import { ListItem } from "./listItem";
 import { useMessageStream } from "../../hooks";
-import { RemoveItemMessage, EditItemMessage } from "../../types";
+import {
+  AddItemMessage,
+  RemoveItemMessage,
+  EditItemMessage
+} from "../../types";
 
 const NONE = "";
 
@@ -13,8 +17,12 @@ export function List({
 }: {
   listItemDomain: ListItemCollection;
 }) {
+  const [addItemData, setAddItemData] = useMessageStream<AddItemMessage>(
+    (x) => typeof x?.itemContent !== "undefined"
+  );
   const [removeData]: [RemoveItemMessage] = useMessageStream<RemoveItemMessage>(
-    (x) => typeof x?.index !== "undefined"
+    (x: RemoveItemMessage) =>
+      typeof x?.index !== "undefined" && typeof x?.removeContent !== "undefined"
   );
   const [editData]: [EditItemMessage] = useMessageStream<EditItemMessage>(
     (x) =>
@@ -23,6 +31,10 @@ export function List({
   );
   const [listItems, setListItems] = useState([""]);
   const [removedItem, setRemovedItem] = useState(NONE);
+
+  const cancelUndo = () => {
+    setRemovedItem("");
+  };
 
   useEffect(() => {
     setListItems(listItemDomain.getItems());
@@ -35,8 +47,15 @@ export function List({
   }, [removeData]);
 
   useEffect(() => {
-    console.log("edit called");
+    cancelUndo();
   }, [editData]);
+
+  useEffect(() => {
+    console.log("adding " + addItemData.itemContent);
+    listItemDomain.addItem(addItemData.itemContent);
+    setListItems(listItemDomain.getItems());
+    setRemovedItem(NONE);
+  }, [addItemData]);
   // const removeItem = (itemIndexToRemove: number) => () => {
   //   setRemovedItem(listItems[itemIndexToRemove]);
   //   listItemDomain.removeItem(itemIndexToRemove);
@@ -52,10 +71,6 @@ export function List({
     listItemDomain.addItem(itemToAdd);
     setListItems(listItemDomain.getItems());
     setRemovedItem(NONE);
-  };
-
-  const cancelUndo = () => {
-    setRemovedItem("");
   };
 
   const undoRemoval = () => {

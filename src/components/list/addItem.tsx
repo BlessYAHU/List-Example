@@ -1,10 +1,15 @@
 import React, { useState } from "react";
+import { useMessageStream } from "../../hooks";
+import { AddItemMessage } from "../../types";
 
 export function AddItem({
   addItemAction
 }: {
   addItemAction: (itemValue: string) => void;
 }) {
+  const [addItemData, setAddItemData] = useMessageStream<AddItemMessage>(
+    (x) => typeof x?.ItemContent !== "undefined"
+  );
   const [addItemValue, setAddItemValue] = useState("");
   const [isAddDisabled, setIsAddDisabled] = useState(true);
 
@@ -14,8 +19,9 @@ export function AddItem({
     setAddItemValue(evt.target.value);
   };
   const handleAddItem = (value: string) => () => {
-    console.log(value);
-    addItemAction(value);
+    //console.log('Adding ' + value);
+    setAddItemData({ itemContent: value });
+    //addItemAction(value);
     setAddItemValue("");
     setIsAddDisabled(true);
   };
