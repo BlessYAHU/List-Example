@@ -3,12 +3,9 @@ import { Header } from "./header";
 import { Footer } from "./footer";
 import { ListItemCollection } from "./ListItems";
 import { ListItem } from "./listItem";
-import { useMessageStream } from "../../hooks";
-import {
-  AddItemMessage,
-  RemoveItemMessage,
-  EditItemMessage
-} from "../../types";
+import { useEditItemStream, useRemoveItemStream } from "../../hooks";
+//import { RemoveItemMessage, EditItemMessage } from "../../types";
+import { useAddItemStream } from "../../hooks";
 
 const NONE = "";
 
@@ -17,20 +14,6 @@ export function List({
 }: {
   listItemDomain: ListItemCollection;
 }) {
-  const isRemoveDataExists = (removeItem: RemoveItemMessage) =>
-    typeof removeItem?.index !== "undefined" &&
-    typeof removeItem?.removeContent !== "undefined";
-  const isAddDataExists = (addItem: AddItemMessage) =>
-    typeof addItem?.itemContent !== "undefined";
-  const isEditDataExists = (x: EditItemMessage) =>
-    typeof x?.index !== "undefined" && typeof x?.currentContent !== "undefined";
-
-  const [addItemData] = useMessageStream<AddItemMessage>(isAddDataExists);
-  const [removeData] = useMessageStream<RemoveItemMessage>(isRemoveDataExists);
-  //   (x: RemoveItemMessage) =>
-  //     typeof x?.index !== "undefined" && typeof x?.removeContent !== "undefined"
-  // );
-  const [editData] = useMessageStream<EditItemMessage>(isEditDataExists);
   const [listItems, setListItems] = useState([""]);
   const [removedItem, setRemovedItem] = useState(NONE);
 
@@ -38,43 +21,28 @@ export function List({
     setRemovedItem("");
   };
 
+  useRemoveItemStream((x) => {
+    console.log("removing " + JSON.stringify(x));
+    setRemovedItem(listItems[x.index]);
+    listItemDomain.removeItem(x.index);
+    setListItems(listItemDomain.getItems());
+  });
+
+  useAddItemStream((x) => {
+    console.log("adding useeffect " + x + JSON.stringify(x));
+    cancelUndo();
+    listItemDomain.addItem(x.itemContent);
+    setListItems(listItemDomain.getItems());
+    setRemovedItem(NONE);
+  });
+
   useEffect(() => {
     setListItems(listItemDomain.getItems());
   }, []);
 
-  useEffect(() => {
-    if (isRemoveDataExists(removeData)) {
-      console.log("removing " + JSON.stringify(removeData));
-      setRemovedItem(listItems[removeData.index]);
-      listItemDomain.removeItem(removeData.index);
-      setListItems(listItemDomain.getItems());
-    }
-  }, [removeData]);
-
-  useEffect(() => {
-    if (isEditDataExists(editData)) {
-      cancelUndo();
-    }
-  }, [editData]);
-
-  useEffect(() => {
-    if (isAddDataExists(addItemData)) {
-      console.log("adding " + addItemData.itemContent);
-      //listItemDomain.addItem(addItemData.itemContent);
-      setListItems(listItemDomain.getItems());
-      setRemovedItem(NONE);
-    }
-  }, [addItemData]);
-
   const updateItem = (index: number, updatedItemContent: string) => () => {
     listItemDomain.updateItem(index, updatedItemContent);
     setListItems(listItemDomain.getItems());
-  };
-
-  const addItem = (itemToAdd: string) => {
-    listItemDomain.addItem(itemToAdd);
-    setListItems(listItemDomain.getItems());
-    setRemovedItem(NONE);
   };
 
   const undoRemoval = () => {
@@ -95,14 +63,13 @@ export function List({
 
   return (
     <>
-      <Header handleAddItem={addItem} />
+      <Header />
 
       <ul>{itms}</ul>
       <Footer
         itemCount={listItems.length}
         removedItem={removedItem}
-        handleUndo={undoRemoval}
-        handleCancelUndo={cancelUndo}
+        onUndo={undoRemoval}
       />
     </>
   );

@@ -1,28 +1,18 @@
 import { useState } from "react";
-import { useMessageStream } from "../../hooks";
-import { RemoveItemMessage, EditItemMessage } from "../../types";
+import { useEditItemStream, useRemoveItemStream } from "../../hooks";
 
 export function ListItem({
   itemContent,
   index,
-  //onRemoveItem,
   onUpdateItem
-}: //onEditItem
-{
+}: {
   itemContent: string;
   index: number;
-  //onRemoveItem: (index: number) => () => void;
   onUpdateItem: (index: number, updatedItemContent: string) => () => void;
-  //onEditItem: () => void;
 }) {
-  const [removeData, setRemoveData] = useMessageStream<RemoveItemMessage>(
-    (x) => typeof x?.index !== "undefined"
-  );
-  const [editData, setEditData] = useMessageStream<EditItemMessage>(
-    (x) =>
-      typeof x?.index !== "undefined" &&
-      typeof x?.currentContent !== "undefined"
-  );
+  const [setRemoveData] = useRemoveItemStream(null);
+  const [setEditData] = useEditItemStream(null);
+
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
   const handleRemove = () => {
@@ -40,6 +30,7 @@ export function ListItem({
   const editItem = () => {
     handleEdit();
     setIsEditMode(true);
+    setUpdatedItemContent(itemContent);
   };
 
   return (
