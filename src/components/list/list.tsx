@@ -10,6 +10,7 @@ import {
 } from "../../hooks";
 //import { RemoveItemMessage, EditItemMessage } from "../../types";
 import { useAddItemStream } from "../../hooks";
+import { UndoType } from "../../types";
 
 const NONE = "";
 
@@ -53,10 +54,23 @@ export function List({
   };
 
   const [setUndoItem] = useUndoItemStream((x) => {
+    console.log(JSON.stringify(x));
     // const undoRemoval = () => {
-    listItemDomain.undoRemoveLastItem();
-    setListItems(listItemDomain.getItems());
-    cancelUndo();
+    switch (x.UndoAction) {
+      case UndoType.REMOVE:
+        listItemDomain.undoRemoveLastItem();
+        setListItems(listItemDomain.getItems());
+        cancelUndo();
+        break;
+      case UndoType.ADD:
+        listItemDomain.undoAddItem();
+        setListItems(listItemDomain.getItems());
+        cancelUndo();
+        break;
+    }
+    // listItemDomain.undoRemoveLastItem();
+    // setListItems(listItemDomain.getItems());
+    // cancelUndo();
   });
 
   const itms = listItems.map((item, index) => (

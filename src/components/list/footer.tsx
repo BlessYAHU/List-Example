@@ -4,6 +4,7 @@ import {
   useEditItemStream,
   useUndoItemStream
 } from "../../hooks";
+import { useAddItemStream } from "../../hooks/useAddItemStream";
 import { UndoType } from "../../types";
 
 export function Footer({
@@ -16,9 +17,12 @@ export function Footer({
   // onUndo: () => void;
 }) {
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
+  const [showAddUndoPrompt, setShowAddUndoPrompt] = useState(false);
+  const [addItem, setAddItem] = useState("");
 
   const handleCancel = () => {
     setShowUndoPrompt(false);
+    setShowAddUndoPrompt(false);
   };
 
   const [setUndoItem] = useUndoItemStream((x) => {
@@ -44,12 +48,30 @@ export function Footer({
     console.log("removing " + JSON.stringify(x));
   });
 
+  useAddItemStream((x) => {
+    setAddItem(x.itemContent);
+    setShowAddUndoPrompt(true);
+  });
+
   return (
     <>
       <div>Items: {itemCount} </div>
       {showUndoPrompt ? (
         <div>
           Just removed {removedItem} Undo?{" "}
+          <a onClick={handleUndo} href="#">
+            Yes
+          </a>{" "}
+          <a onClick={handleCancel} href="#">
+            No
+          </a>
+        </div>
+      ) : (
+        ""
+      )}
+      {showAddUndoPrompt ? (
+        <div>
+          Just Added {addItem} Undo?{" "}
           <a onClick={handleUndo} href="#">
             Yes
           </a>{" "}
