@@ -2,5 +2,7 @@ export {
   RemoveItemMessage,
   UpdateItemMessage,
   AddItemMessage,
-  EditItemMessage
+  EditItemMessage,
+  UndoType,
+  UndoItemMeessage
 } from "./ListEventMessages";

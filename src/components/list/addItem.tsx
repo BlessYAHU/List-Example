@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useAddItemStream } from "../../hooks";
+import { useAddItemStream, useUndoItemStream } from "../../hooks";
+import { UndoType } from "../../types";
 
 export function AddItem() {
   // const [addItemData, setAddItemData] = useMessageStream<AddItemMessage>(
@@ -8,6 +9,13 @@ export function AddItem() {
   const [setAddItemData] = useAddItemStream(null);
   const [addItemValue, setAddItemValue] = useState("");
   const [isAddDisabled, setIsAddDisabled] = useState(true);
+  // const [setUndoItem] = useUndoItemStream(null);
+
+  // setUndoItem({
+  //   UndoAction: UndoType.ADD,
+  //   previousIndex: 0,
+  //   previousContent: ''
+  // });
 
   const handleChange = (evt: {
     target: { value: React.SetStateAction<string> };

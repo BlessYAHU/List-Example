@@ -3,7 +3,11 @@ import { Header } from "./header";
 import { Footer } from "./footer";
 import { ListItemCollection } from "./ListItems";
 import { ListItem } from "./listItem";
-import { useEditItemStream, useRemoveItemStream } from "../../hooks";
+import {
+  useEditItemStream,
+  useRemoveItemStream,
+  useUndoItemStream
+} from "../../hooks";
 //import { RemoveItemMessage, EditItemMessage } from "../../types";
 import { useAddItemStream } from "../../hooks";
 
@@ -18,8 +22,12 @@ export function List({
   const [removedItem, setRemovedItem] = useState(NONE);
 
   const cancelUndo = () => {
-    setRemovedItem("");
+    setRemovedItem(NONE);
   };
+
+  useEditItemStream((x) => {
+    cancelUndo();
+  });
 
   useRemoveItemStream((x) => {
     console.log("removing " + JSON.stringify(x));
@@ -33,7 +41,6 @@ export function List({
     cancelUndo();
     listItemDomain.addItem(x.itemContent);
     setListItems(listItemDomain.getItems());
-    setRemovedItem(NONE);
   });
 
   useEffect(() => {
@@ -45,11 +52,12 @@ export function List({
     setListItems(listItemDomain.getItems());
   };
 
-  const undoRemoval = () => {
+  const [setUndoItem] = useUndoItemStream((x) => {
+    // const undoRemoval = () => {
     listItemDomain.undoRemoveLastItem();
     setListItems(listItemDomain.getItems());
     cancelUndo();
-  };
+  });
 
   const itms = listItems.map((item, index) => (
     <ListItem
@@ -69,7 +77,7 @@ export function List({
       <Footer
         itemCount={listItems.length}
         removedItem={removedItem}
-        onUndo={undoRemoval}
+        //onUndo={undoRemoval}
       />
     </>
   );

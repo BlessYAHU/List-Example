@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { useMessageStream } from "./";
-import { AddItemMessage, EditItemMessage, RemoveItemMessage } from "../types";
+import {
+  AddItemMessage,
+  EditItemMessage,
+  RemoveItemMessage,
+  UndoItemMeessage
+} from "../types";
 
 export function createUseItemMessageStream<T>(
   identifyMessageFun: (x: T) => boolean
@@ -37,10 +42,18 @@ export const useEditItemStream = createUseItemMessageStream<EditItemMessage>(
 );
 
 export const isRemoveItemMessage = (x: RemoveItemMessage) =>
-  typeof x?.index !== "undefined";
+  typeof x?.index !== "undefined" && typeof x?.removeContent !== "undefined";
 export const useRemoveItemStream = createUseItemMessageStream<
   RemoveItemMessage
 >(isRemoveItemMessage);
+
+export const isUndoItemMessage = (x: UndoItemMeessage) =>
+  typeof x?.UndoAction !== "undefined" &&
+  typeof x?.previousContent !== "undefined" &&
+  typeof x?.previousIndex !== "undefined";
+export const useUndoItemStream = createUseItemMessageStream<UndoItemMeessage>(
+  isUndoItemMessage
+);
 
 export { useMessageStream } from "./useMessageStream";
 // export { useAddItemStream } from "./useAddItemStream";

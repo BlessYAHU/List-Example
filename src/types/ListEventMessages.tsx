@@ -16,3 +16,14 @@ export type EditItemMessage = {
   index: number;
   currentContent: string;
 };
+
+export enum UndoType {
+  EDIT = "EDIT",
+  ADD = "ADD",
+  REMOVE = "REMOVE"
+}
+export type UndoItemMeessage = {
+  UndoAction: UndoType;
+  previousIndex: number;
+  previousContent: string;
+};

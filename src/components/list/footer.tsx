@@ -1,31 +1,48 @@
 import { useState } from "react";
-import { useRemoveItemStream } from "../../hooks";
+import {
+  useRemoveItemStream,
+  useEditItemStream,
+  useUndoItemStream
+} from "../../hooks";
+import { UndoType } from "../../types";
 
 export function Footer({
   itemCount,
-  removedItem = "",
-  onUndo
-}: {
+  removedItem = ""
+}: //onUndo
+{
   itemCount: number;
   removedItem: string;
-  onUndo: () => void;
+  // onUndo: () => void;
 }) {
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
 
-  const [removeData, setRemoveData] = useRemoveItemStream((x) => {
-    setShowUndoPrompt(true);
-    console.log("removing " + JSON.stringify(removeData));
-  });
-
   const handleCancel = () => {
-    console.log(removeData);
     setShowUndoPrompt(false);
   };
+
+  const [setUndoItem] = useUndoItemStream((x) => {
+    console.log(x);
+  });
 
   const handleUndo = () => {
     setShowUndoPrompt(false);
-    onUndo();
+    setUndoItem({
+      UndoAction: UndoType.REMOVE,
+      previousContent: "",
+      previousIndex: 0
+    });
+    //onUndo();
   };
+
+  useEditItemStream((x) => {
+    handleCancel();
+  });
+
+  useRemoveItemStream((x) => {
+    setShowUndoPrompt(true);
+    console.log("removing " + JSON.stringify(x));
+  });
 
   return (
     <>
