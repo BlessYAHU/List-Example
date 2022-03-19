@@ -1,10 +1,11 @@
 import { useState } from "react";
 import {
   useRemoveItemStream,
-  useEditItemStream,
-  useUndoItemStream
+  useUpdateItemStream,
+  useUndoItemStream,
+  useAddItemStream
 } from "../../hooks";
-import { useAddItemStream } from "../../hooks/useAddItemStream";
+
 import { UndoType } from "../../types";
 
 export function Footer({
@@ -18,11 +19,14 @@ export function Footer({
 }) {
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
   const [showAddUndoPrompt, setShowAddUndoPrompt] = useState(false);
+  const [showEditUndoPrompt, setShowEditUndoPrompt] = useState(false);
+  const [editItem, setEditItem] = useState("");
   const [addItem, setAddItem] = useState("");
 
   const handleCancel = () => {
     setShowUndoPrompt(false);
     setShowAddUndoPrompt(false);
+    setShowEditUndoPrompt(false);
   };
 
   const [setUndoItem] = useUndoItemStream((x) => {
@@ -31,6 +35,7 @@ export function Footer({
 
   const handleUndo = () => {
     setShowUndoPrompt(false);
+    setShowAddUndoPrompt(false);
     setUndoItem({
       UndoAction: UndoType.REMOVE,
       previousContent: "",
@@ -39,8 +44,10 @@ export function Footer({
     //onUndo();
   };
 
-  useEditItemStream((x) => {
-    handleCancel();
+  useUdateItemStream((x) => {
+    setEditItem(x.currentContent);
+    setShowEditUndoPrompt(true);
+    // handleCancel();
   });
 
   useRemoveItemStream((x) => {
@@ -72,6 +79,19 @@ export function Footer({
       {showAddUndoPrompt ? (
         <div>
           Just Added {addItem} Undo?{" "}
+          <a onClick={handleUndo} href="#">
+            Yes
+          </a>{" "}
+          <a onClick={handleCancel} href="#">
+            No
+          </a>
+        </div>
+      ) : (
+        ""
+      )}
+      {showEditUndoPrompt ? (
+        <div>
+          Just Edited {editItem} Undo?{" "}
           <a onClick={handleUndo} href="#">
             Yes
           </a>{" "}

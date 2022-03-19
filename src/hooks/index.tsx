@@ -40,6 +40,7 @@ export const isEditItemMessage = (x: EditItemMessage) =>
 export const useEditItemStream = createUseItemMessageStream<EditItemMessage>(
   isEditItemMessage
 );
+// todo: add update item stream
 
 export const isRemoveItemMessage = (x: RemoveItemMessage) =>
   typeof x?.index !== "undefined" && typeof x?.removeContent !== "undefined";
