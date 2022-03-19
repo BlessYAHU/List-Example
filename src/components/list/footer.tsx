@@ -44,8 +44,8 @@ export function Footer({
     //onUndo();
   };
 
-  useUdateItemStream((x) => {
-    setEditItem(x.currentContent);
+  useUpdateItemStream((x) => {
+    setEditItem(x.updatedContent);
     setShowEditUndoPrompt(true);
     // handleCancel();
   });

@@ -4,7 +4,8 @@ import {
   AddItemMessage,
   EditItemMessage,
   RemoveItemMessage,
-  UndoItemMeessage
+  UndoItemMeessage,
+  UpdateItemMessage
 } from "../types";
 
 export function createUseItemMessageStream<T>(
@@ -41,6 +42,11 @@ export const useEditItemStream = createUseItemMessageStream<EditItemMessage>(
   isEditItemMessage
 );
 // todo: add update item stream
+export const isUpdateItemMessage = (x: UpdateItemMessage) =>
+  typeof x?.index !== "undefined" && typeof x?.updatedContent !== "undefined";
+export const useUpdateItemStream = createUseItemMessageStream<
+  UpdateItemMessage
+>(isUpdateItemMessage);
 
 export const isRemoveItemMessage = (x: RemoveItemMessage) =>
   typeof x?.index !== "undefined" && typeof x?.removeContent !== "undefined";

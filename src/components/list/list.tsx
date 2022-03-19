@@ -6,10 +6,12 @@ import { ListItem } from "./listItem";
 import {
   useEditItemStream,
   useRemoveItemStream,
-  useUndoItemStream
+  useUndoItemStream,
+  useAddItemStream,
+  useUpdateItemStream
 } from "../../hooks";
 //import { RemoveItemMessage, EditItemMessage } from "../../types";
-import { useAddItemStream } from "../../hooks";
+//import { useAddItemStream } from "../../hooks";
 import { UndoType } from "../../types";
 
 const NONE = "";
@@ -30,6 +32,10 @@ export function List({
     cancelUndo();
   });
 
+  useUpdateItemStream((x) => {
+    listItemDomain.updateItem(x.index, x.updatedContent);
+    setListItems(listItemDomain.getItems());
+  });
   useRemoveItemStream((x) => {
     console.log("removing " + JSON.stringify(x));
     setRemovedItem(listItems[x.index]);
