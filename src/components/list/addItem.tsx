@@ -8,10 +8,10 @@ export function AddItem({
   const [addItemValue, setAddItemValue] = useState("");
   const [isAddDisabled, setIsAddDisabled] = useState(true);
 
-  const handleChange = (evt) => {
-    console.log(evt.target.value);
-    setIsAddDisabled(evt.target.value === "");
-    setAddItemValue(evt.target.value);
+  const handleChange = (evt: React.ChangeEvent) => {
+    console.log(evt.target.textContent);
+    setIsAddDisabled(evt.target.textContent === "");
+    setAddItemValue(evt.target.textContent ?? '');
   };
   const handleAddItem = (value: string) => () => {
     console.log(value);
