@@ -11,12 +11,12 @@ import {
 export function createUseItemMessageStream<T>(
   identifyMessageFun: (x: T) => boolean
 ) {
-  return (func: (x: T) => void | null) => {
+  return (func?: (x: T) => void) => {
     const [itemMessage, setItemMessage] = useMessageStream<T>(
       identifyMessageFun
     );
 
-    if (func !== null) {
+    if (typeof func !== 'undefined') {
       useEffect(() => {
         if (identifyMessageFun(itemMessage)) {
           func(itemMessage);

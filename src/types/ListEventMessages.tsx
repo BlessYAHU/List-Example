@@ -1,11 +1,11 @@
-export type RemoveItemMessage = {
-  index: number;
-  removeContent: string;
-};
-
 export type UpdateItemMessage = {
   index: number;
   updatedContent: string;
+};
+
+export type RemoveItemMessage = {
+  index: number;
+  removeContent: string;
 };
 
 export type AddItemMessage = {

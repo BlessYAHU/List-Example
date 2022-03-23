@@ -1,8 +1,9 @@
-export {
+export type {
   RemoveItemMessage,
   UpdateItemMessage,
   AddItemMessage,
   EditItemMessage,
-  UndoType,
   UndoItemMeessage
 } from "./ListEventMessages";
+
+export { UndoType } from "./ListEventMessages";

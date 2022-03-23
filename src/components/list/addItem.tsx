@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useAddItemStream, useUndoItemStream } from "../../hooks";
-import { UndoType } from "../../types";
+import { useAddItemStream } from "../../hooks";
+// import { UndoType } from "../../types";
 
 export function AddItem() {
   // const [addItemData, setAddItemData] = useMessageStream<AddItemMessage>(
   //   (x) => typeof x?.itemContent !== "undefined"
   // );
-  const [setAddItemData] = useAddItemStream(null);
+  const [setAddItemData] = useAddItemStream();
   const [addItemValue, setAddItemValue] = useState("");
   const [isAddDisabled, setIsAddDisabled] = useState(true);
 

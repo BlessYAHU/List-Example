@@ -81,7 +81,6 @@ export function List({
 
   const itms = listItems.map((item, index) => (
     <ListItem
-      onUpdateItem={updateItem}
       index={index}
       itemContent={item}
       key={index}

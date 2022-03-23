@@ -9,15 +9,15 @@ import {
 export function ListItem({
   itemContent,
   index
-}: //onUpdateItem
+}: 
 {
   itemContent: string;
   index: number;
   //onUpdateItem: (index: number, updatedItemContent: string) => () => void;
 }) {
-  const [setRemoveData] = useRemoveItemStream(null);
-  const [setEditData] = useEditItemStream(null);
-  const [setUpdateData] = useUpdateItemStream(null);
+  const [setRemoveData] = useRemoveItemStream();
+  const [setEditData] = useEditItemStream();
+  const [setUpdateData] = useUpdateItemStream();
 
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
