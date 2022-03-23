@@ -1,28 +1,43 @@
 import { useState } from "react";
+import {
+  useEditItemStream,
+  useRemoveItemStream,
+  useUndoItemStream,
+  useUpdateItemStream
+} from "../../hooks";
 
 export function ListItem({
   itemContent,
-  index,
-  onRemoveItem,
-  onUpdateItem,
-  onEditItem
-}: {
+  index
+}: 
+{
   itemContent: string;
   index: number;
-  onRemoveItem: (index: number) => () => void;
-  onUpdateItem: (index: number, updatedItemContent: string) => () => void;
-  onEditItem: () => void;
+  //onUpdateItem: (index: number, updatedItemContent: string) => () => void;
 }) {
+  const [setRemoveData] = useRemoveItemStream();
+  const [setEditData] = useEditItemStream();
+  const [setUpdateData] = useUpdateItemStream();
+
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
+  const handleRemove = () => {
+    console.log("removing..." + index);
+    setRemoveData({ index: index, removeContent: itemContent });
+  };
+  const handleEdit = () =>
+    setEditData({ index: index, currentContent: itemContent });
+
   const updateItem = () => {
-    onUpdateItem(index, updatedItemContent)();
+    setUpdateData({ index: index, updatedContent: updatedItemContent });
+    //onUpdateItem(index, updatedItemContent)();
     setIsEditMode(false);
   };
 
   const editItem = () => {
-    onEditItem();
+    handleEdit();
     setIsEditMode(true);
+    setUpdatedItemContent(itemContent);
   };
 
   return (
@@ -40,7 +55,7 @@ export function ListItem({
       ) : (
         <li key={index}>
           {itemContent} <button onClick={editItem}>Edit</button>
-          <button onClick={onRemoveItem(index)}>X</button>
+          <button onClick={handleRemove}>X</button>
         </li>
       )}
     </>

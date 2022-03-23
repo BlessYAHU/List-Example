@@ -4,6 +4,8 @@ interface ListItemCollection {
   removeItem: (itemIndexToRemove: number) => void;
   undoRemoveLastItem: () => void;
   updateItem: (indexItemToUpdate: number, updatedContent: string) => void;
+  undoAddItem: () => void;
+  undoUpdateItem: () => void;
 }
 
 const ListItems = (initialItems: string[] = []): ListItemCollection => {
@@ -13,6 +15,7 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
 
   return {
     addItem: (item: string) => {
+      previousItems = [...items];
       items = items.concat([item]);
     },
     getItems: (): string[] => {
@@ -24,6 +27,12 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
       items = items.filter((x, index) => index !== itemIndexToRemove);
     },
     undoRemoveLastItem: () => {
+      items = previousItems;
+    },
+    undoAddItem: () => {
+      items = previousItems;
+    },
+    undoUpdateItem: () => {
       items = previousItems;
     },
     updateItem: (indexItemToUpdate: number, updatedContent: string) => {
