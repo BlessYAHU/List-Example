@@ -1,2 +1,2 @@
 export { List } from "./list";
-export { ListItems } from "./ListItems";
+export { ListItems } from "../../domain/ListItems";

@@ -20,7 +20,7 @@ export function useMessageStream<T>(
   }, [_setData]);
 
   const setData = (payload: T) => {
-    // console.log(`move it along ${JSON.stringify(payload)}`);
+    console.log(`move it along ${JSON.stringify(payload)}`);
     myData$.next(payload);
   };
 
