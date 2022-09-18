@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Header } from "./header";
 import { Footer } from "./footer";
-import { ListItemCollection } from "./ListItems";
+import { ListItemCollection } from "../../domain/ListItems";
 import { ListItem } from "./listItem";
 import {
   useEditItemStream,
