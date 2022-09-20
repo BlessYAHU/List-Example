@@ -8,10 +8,10 @@
   ],
   "main": "src/index.tsx",
   "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "^5.0.1",
-    "rxjs": "7.5.5"
+    "react": "latest",
+    "react-dom": "latest",
+    "rxjs": "latest",
+    "next": "latest"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
@@ -22,10 +22,9 @@
     "webpack-cli": "^4.9.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build"
   },
   "browserslist": [
     ">0.2%",
