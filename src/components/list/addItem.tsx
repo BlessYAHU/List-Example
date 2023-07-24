@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useAddItemStream } from "../../hooks";
+import { executeOnEnter } from "./utils";
 
 export function AddItem() {
-  const [setAddItemData] = useAddItemStream();
+  const [setAddItemData] = useAddItemStream(() => {
+    setAddItemValue("");
+    setIsAddDisabled(true);
+  });
   const [addItemValue, setAddItemValue] = useState("");
   const [isAddDisabled, setIsAddDisabled] = useState(true);
 
@@ -16,16 +20,14 @@ export function AddItem() {
   const handleAddItem = (value: string) => () => {
     console.log("Adding " + value);
     setAddItemData({ itemContent: value });
-    setAddItemValue("");
-    setIsAddDisabled(true);
   };
 
   return (
     <>
-      <input type="search" onChange={handleChange} value={addItemValue}></input>
+      <input type="search" onChange={handleChange} value={addItemValue} 
+            onKeyDown={ executeOnEnter( () => setAddItemData({ itemContent: addItemValue })) } ></input>
       <button onClick={handleAddItem(addItemValue)} disabled={isAddDisabled}>
-        {" "}
-        Add{" "}
+        Add
       </button>
     </>
   );
