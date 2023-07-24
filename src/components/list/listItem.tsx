@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   useEditItemStream,
   useRemoveItemStream,
-  useUndoItemStream,
   useUpdateItemStream
 } from "../../hooks";
 
@@ -13,7 +12,6 @@ export function ListItem({
 {
   itemContent: string;
   index: number;
-  //onUpdateItem: (index: number, updatedItemContent: string) => () => void;
 }) {
   const [setRemoveData] = useRemoveItemStream();
   const [setEditData] = useEditItemStream();
@@ -30,7 +28,6 @@ export function ListItem({
 
   const updateItem = () => {
     setUpdateData({ index: index, updatedContent: updatedItemContent });
-    //onUpdateItem(index, updatedItemContent)();
     setIsEditMode(false);
   };
 
