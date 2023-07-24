@@ -10,22 +10,20 @@ import {
   useAddItemStream,
   useUpdateItemStream
 } from "../../hooks";
-//import { RemoveItemMessage, EditItemMessage } from "../../types";
-//import { useAddItemStream } from "../../hooks";
 import { UndoType } from "../../types";
 
-const NONE = "";
+const NONE = '';
 
 export function List({
   listItemDomain
 }: {
   listItemDomain: ListItemCollection;
 }) {
-  const [listItems, setListItems] = useState([""]);
-  const [removedItem, setRemovedItem] = useState(NONE);
+  const [listItems, setListItems] = useState(['']);
+  const [targetItem, setTargetItem] = useState(NONE);
 
   const cancelUndo = () => {
-    setRemovedItem(NONE);
+    setTargetItem(NONE);
   };
 
   useEditItemStream((x) => {
@@ -34,11 +32,12 @@ export function List({
 
   useUpdateItemStream((x) => {
     listItemDomain.updateItem(x.index, x.updatedContent);
+    setTargetItem(listItems[x.index]);
     setListItems(listItemDomain.getItems());
   });
   useRemoveItemStream((x) => {
     console.log("removing " + JSON.stringify(x));
-    setRemovedItem(listItems[x.index]);
+    setTargetItem(listItems[x.index]);
     listItemDomain.removeItem(x.index);
     setListItems(listItemDomain.getItems());
   });
@@ -47,6 +46,7 @@ export function List({
     console.log("adding useeffect " + x + JSON.stringify(x));
     cancelUndo();
     listItemDomain.addItem(x.itemContent);
+    setTargetItem(x.itemContent);
     setListItems(listItemDomain.getItems());
   });
 
@@ -54,14 +54,8 @@ export function List({
     setListItems(listItemDomain.getItems());
   }, []);
 
-  const updateItem = (index: number, updatedItemContent: string) => () => {
-    listItemDomain.updateItem(index, updatedItemContent);
-    setListItems(listItemDomain.getItems());
-  };
-
-  const [setUndoItem] = useUndoItemStream((x) => {
+  useUndoItemStream((x) => {
     console.log(JSON.stringify(x));
-    // const undoRemoval = () => {
     switch (x.UndoAction) {
       case UndoType.REMOVE:
         listItemDomain.undoRemoveLastItem();
@@ -73,10 +67,12 @@ export function List({
         setListItems(listItemDomain.getItems());
         cancelUndo();
         break;
+      case UndoType.EDIT:
+        listItemDomain.undoUpdateItem();
+        setListItems(listItemDomain.getItems());
+        cancelUndo();
+        break;
     }
-    // listItemDomain.undoRemoveLastItem();
-    // setListItems(listItemDomain.getItems());
-    // cancelUndo();
   });
 
   const itms = listItems.map((item, index) => (
@@ -84,19 +80,16 @@ export function List({
       index={index}
       itemContent={item}
       key={index}
-      //onEditItem={cancelUndo}
     />
   ));
 
   return (
     <>
       <Header />
-
       <ul>{itms}</ul>
       <Footer
         itemCount={listItems.length}
-        removedItem={removedItem}
-        //onUndo={undoRemoval}
+        itemText={targetItem}
       />
     </>
   );

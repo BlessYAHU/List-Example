@@ -37,6 +37,13 @@ export function ListItem({
     setUpdatedItemContent(itemContent);
   };
 
+  const submitOnEnter = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+    if(evt.key === 'Enter')
+    {
+      updateItem();
+    }
+  }
+
   return (
     <>
       {isEditMode ? (
@@ -45,7 +52,8 @@ export function ListItem({
             type="search"
             value={updatedItemContent}
             onChange={(evt) => setUpdatedItemContent(evt.target.value)}
-          />{" "}
+            onKeyDown={submitOnEnter}
+          />
           <button onClick={updateItem}>Update</button>
           <button onClick={() => setIsEditMode(false)}>Cancel</button>
         </li>
