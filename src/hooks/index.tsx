@@ -5,7 +5,8 @@ import {
   EditItemMessage,
   RemoveItemMessage,
   UndoItemMeessage,
-  UpdateItemMessage
+  UpdateItemMessage,
+  CompleteItemMessage
 } from "../types";
 
 export function createUseItemMessageStream<T>(
@@ -61,6 +62,12 @@ export const isUndoItemMessage = (x: UndoItemMeessage) =>
 export const useUndoItemStream = createUseItemMessageStream<UndoItemMeessage>(
   isUndoItemMessage
 );
+
+export const isCompleteItemMessage = (x: CompleteItemMessage) =>
+  typeof x?.targetIndex !== "undefined";
+export const useCompleteItemStream = createUseItemMessageStream<
+  CompleteItemMessage
+>(isCompleteItemMessage);
 
 export { useMessageStream } from "./useMessageStream";
 // export { useAddItemStream } from "./useAddItemStream";

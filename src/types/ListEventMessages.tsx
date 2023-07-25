@@ -27,3 +27,7 @@ export type UndoItemMeessage = {
   previousIndex: number;
   previousContent: string;
 };
+
+export type CompleteItemMessage = {
+  targetIndex: number;
+};

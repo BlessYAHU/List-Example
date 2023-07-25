@@ -2,21 +2,26 @@ import { useState } from "react";
 import {
   useEditItemStream,
   useRemoveItemStream,
-  useUpdateItemStream
+  useUpdateItemStream,
+  useCompleteItemStream
 } from "../../hooks";
+
 import { executeOnEnter } from "./utils";
 
 export function ListItem({
+  isCompleted = false,
   itemContent,
   index
 }: 
 {
+  isCompleted: boolean;
   itemContent: string;
   index: number;
 }) {
   const [setRemoveData] = useRemoveItemStream();
   const [setEditData] = useEditItemStream();
   const [setUpdateData] = useUpdateItemStream();
+  const [setCompleteData] = useCompleteItemStream();
 
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -44,6 +49,10 @@ export function ListItem({
     }
   }
 
+  const completeItem = () => {
+    setCompleteData({targetIndex: index});
+  };
+
   return (
     <>
       {isEditMode ? (
@@ -59,7 +68,7 @@ export function ListItem({
         </li>
       ) : (
         <li key={index}>
-          <span onClick={editOnDblClick}>{itemContent}</span>  <button onClick={editItem}>Edit</button>
+          <input type="checkbox" checked={isCompleted} onChange={completeItem} /><span onClick={editOnDblClick}>{itemContent}</span>  <button onClick={editItem}>Edit</button>
           <button onClick={handleRemove}>X</button>
         </li>
       )}

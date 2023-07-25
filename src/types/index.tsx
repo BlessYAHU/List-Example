@@ -3,7 +3,8 @@ export type {
   UpdateItemMessage,
   AddItemMessage,
   EditItemMessage,
-  UndoItemMeessage
+  UndoItemMeessage,
+  CompleteItemMessage
 } from "./ListEventMessages";
 
 export { UndoType } from "./ListEventMessages";

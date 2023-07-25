@@ -8,7 +8,8 @@ import {
   useRemoveItemStream,
   useUndoItemStream,
   useAddItemStream,
-  useUpdateItemStream
+  useUpdateItemStream,
+  useCompleteItemStream
 } from "../../hooks";
 import { UndoType } from "../../types";
 
@@ -20,26 +21,42 @@ export function List({
   listItemDomain: ListItemCollection;
 }) {
   const [listItems, setListItems] = useState(['']);
+  const [completedListItems, setCompletedListItems] = useState(['']);
   const [targetItem, setTargetItem] = useState(NONE);
 
   const cancelUndo = () => {
     setTargetItem(NONE);
   };
 
+  const setItems = () => {
+    setListItems(listItemDomain.getItems());
+    setCompletedListItems(listItemDomain.getCompletedItems());
+  }
+
   useEditItemStream((x) => {
     cancelUndo();
+  });
+
+  useCompleteItemStream((x) => {
+    console.log("completing " + JSON.stringify(x));
+    listItemDomain.completeItem(x.targetIndex);
+    // setListItems(listItemDomain.getItems());
+    setItems();
   });
 
   useUpdateItemStream((x) => {
     listItemDomain.updateItem(x.index, x.updatedContent);
     setTargetItem(listItems[x.index]);
-    setListItems(listItemDomain.getItems());
+    // setListItems(listItemDomain.getItems());
+    setItems();
   });
+
   useRemoveItemStream((x) => {
     console.log("removing " + JSON.stringify(x));
     setTargetItem(listItems[x.index]);
     listItemDomain.removeItem(x.index);
-    setListItems(listItemDomain.getItems());
+    // setListItems(listItemDomain.getItems());
+    setItems();
   });
 
   useAddItemStream((x) => {
@@ -47,11 +64,13 @@ export function List({
     cancelUndo();
     listItemDomain.addItem(x.itemContent);
     setTargetItem(x.itemContent);
-    setListItems(listItemDomain.getItems());
+    // setListItems(listItemDomain.getItems());
+    setItems();
   });
 
   useEffect(() => {
-    setListItems(listItemDomain.getItems());
+    // setListItems(listItemDomain.getItems());
+    setItems();
   }, []);
 
   useUndoItemStream((x) => {
@@ -80,13 +99,26 @@ export function List({
       index={index}
       itemContent={item}
       key={index}
+      isCompleted={false}
+    />
+  ));
+
+  const completedItems = completedListItems.map((item, index) => (
+    <ListItem
+      index={index}
+      itemContent={item}
+      key={index}
+      isCompleted={true}
     />
   ));
 
   return (
     <>
       <Header />
-      <ul>{itms}</ul>
+      <ul>
+        {itms}
+        {completedItems}
+      </ul>
       <Footer
         itemCount={listItems.length}
         itemText={targetItem}
