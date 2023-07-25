@@ -38,10 +38,9 @@ export function ListItem({
     setUpdatedItemContent(itemContent);
   };
 
-  const submitOnEnter = (evt: React.KeyboardEvent<HTMLInputElement>) => {
-    if(evt.key === 'Enter')
-    {
-      updateItem();
+  const editOnDblClick = (evt: React.MouseEvent) => {
+    if(evt.detail === 2) {
+      editItem();
     }
   }
 
@@ -60,7 +59,7 @@ export function ListItem({
         </li>
       ) : (
         <li key={index}>
-          {itemContent} <button onClick={editItem}>Edit</button>
+          <span onClick={editOnDblClick}>{itemContent}</span>  <button onClick={editItem}>Edit</button>
           <button onClick={handleRemove}>X</button>
         </li>
       )}
