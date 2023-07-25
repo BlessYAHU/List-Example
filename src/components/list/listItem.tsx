@@ -4,6 +4,7 @@ import {
   useRemoveItemStream,
   useUpdateItemStream
 } from "../../hooks";
+import { executeOnEnter } from "./utils";
 
 export function ListItem({
   itemContent,
@@ -52,7 +53,7 @@ export function ListItem({
             type="search"
             value={updatedItemContent}
             onChange={(evt) => setUpdatedItemContent(evt.target.value)}
-            onKeyDown={submitOnEnter}
+            onKeyDown={ executeOnEnter(updateItem) }
           />
           <button onClick={updateItem}>Update</button>
           <button onClick={() => setIsEditMode(false)}>Cancel</button>
