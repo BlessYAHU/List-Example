@@ -3,21 +3,26 @@ import {
   useRemoveItemStream,
   useUpdateItemStream,
   useUndoItemStream,
-  useAddItemStream
+  useAddItemStream,
+  useShowItemStream
 } from "../../hooks";
 
 import { UndoType } from "../../types";
 
 export function Footer({
   itemCount,
+  completedItemCount,
   itemText = ""
 }: 
 {
   itemCount: number;
+  completedItemCount: number;
   itemText: string;
 }) {
   const [showUndoPrompt, setShowUndoPrompt] = useState(false);
   const [undoType, setUndoType] = useState('');
+  const [showActive, setShowActive] = useState(true);
+  const [showCompleted, setShowCompleted] = useState(true);
 
   const handleCancel = () => {
     setShowUndoPrompt(false);
@@ -51,9 +56,28 @@ export function Footer({
     setShowUndoPrompt(true);
   });
 
+  const [setShowItem] = useShowItemStream(x => {
+    if(x.type === 'Active') setShowActive(x.shouldShow);
+    if(x.type === 'Completed') setShowCompleted(x.shouldShow);
+    if(x.type === 'All') {
+      setShowActive(x.shouldShow);
+      setShowCompleted(x.shouldShow);
+    }
+  });
+  
+  const toggleActive = (type: 'Active' | 'Completed' | 'All') => () => {
+    if(type === 'All')  setShowItem({type: 'All', shouldShow: true});
+    if(type === 'Active') setShowItem({type: type, shouldShow: !showActive})
+    if(type === 'Completed') setShowItem({type: type, shouldShow: !showCompleted})
+  }
+
   return (
     <>
-      <div>Items: {itemCount} </div>
+      <div>
+        <a href="#" onClick={toggleActive('All')}>All </a><span> | </span> 
+        <a href="#" onClick={toggleActive('Active')}>Active: {itemCount} </a> <span> | </span> 
+        <a href="#" onClick={toggleActive('Completed')}> Completed: {completedItemCount}</a>
+      </div>
       {showUndoPrompt ? (
         <div>
           Just {undoType} {itemText} Undo?{" "}

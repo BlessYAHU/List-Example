@@ -3,10 +3,12 @@ import {
   useEditItemStream,
   useRemoveItemStream,
   useUpdateItemStream,
-  useCompleteItemStream
+  useCompleteItemStream,
+  useUndoItemStream
 } from "../../hooks";
 
 import { executeOnEnter } from "./utils";
+import { UndoType } from "../../types";
 
 export function ListItem({
   isCompleted = false,
@@ -22,6 +24,7 @@ export function ListItem({
   const [setEditData] = useEditItemStream();
   const [setUpdateData] = useUpdateItemStream();
   const [setCompleteData] = useCompleteItemStream();
+  const [setUndoItem] = useUndoItemStream();
 
   const [updatedItemContent, setUpdatedItemContent] = useState(itemContent);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -49,8 +52,18 @@ export function ListItem({
     }
   }
 
-  const completeItem = () => {
-    setCompleteData({targetIndex: index});
+  const completeItem = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    if(evt.target.checked) {
+      setCompleteData({targetIndex: index});
+    }
+    else {
+        // undo complete
+      setUndoItem({
+        UndoAction: UndoType.COMPLETE,
+        previousContent: "",
+        previousIndex: index
+      });
+    }
   };
 
   return (

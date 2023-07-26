@@ -9,7 +9,8 @@ import {
   useUndoItemStream,
   useAddItemStream,
   useUpdateItemStream,
-  useCompleteItemStream
+  useCompleteItemStream,
+  useShowItemStream
 } from "../../hooks";
 import { UndoType } from "../../types";
 
@@ -23,6 +24,8 @@ export function List({
   const [listItems, setListItems] = useState(['']);
   const [completedListItems, setCompletedListItems] = useState(['']);
   const [targetItem, setTargetItem] = useState(NONE);
+  const [showActive, setShowActive] = useState(true);
+  const [showCompleted, setShowCompleted] = useState(true);
 
   const cancelUndo = () => {
     setTargetItem(NONE);
@@ -32,6 +35,15 @@ export function List({
     setListItems(listItemDomain.getItems());
     setCompletedListItems(listItemDomain.getCompletedItems());
   }
+
+  useShowItemStream((x) => {
+    if(x.type === 'Active') setShowActive(x.shouldShow);
+    if(x.type === 'Completed') setShowCompleted(x.shouldShow);
+    if(x.type === 'All') {
+      setShowActive(x.shouldShow);
+      setShowCompleted(x.shouldShow);
+    }
+  })
 
   useEditItemStream((x) => {
     cancelUndo();
@@ -54,7 +66,7 @@ export function List({
   useRemoveItemStream((x) => {
     console.log("removing " + JSON.stringify(x));
     setTargetItem(listItems[x.index]);
-    listItemDomain.removeItem(x.index);
+    listItemDomain.removeItem(x.index);k
     // setListItems(listItemDomain.getItems());
     setItems();
   });
@@ -78,23 +90,31 @@ export function List({
     switch (x.UndoAction) {
       case UndoType.REMOVE:
         listItemDomain.undoRemoveLastItem();
-        setListItems(listItemDomain.getItems());
+        setItems();
+        // setListItems(listItemDomain.getItems());
         cancelUndo();
         break;
       case UndoType.ADD:
         listItemDomain.undoAddItem();
-        setListItems(listItemDomain.getItems());
+        setItems();
+        // setListItems(listItemDomain.getItems());
         cancelUndo();
         break;
       case UndoType.EDIT:
         listItemDomain.undoUpdateItem();
-        setListItems(listItemDomain.getItems());
+        setItems();
+        // setListItems(listItemDomain.getItems());
+        cancelUndo();
+        break;
+      case UndoType.COMPLETE:
+        listItemDomain.undoCompleteItem(x.previousIndex);
+        setItems();
         cancelUndo();
         break;
     }
   });
 
-  const itms = listItems.map((item, index) => (
+  const itms = showActive && listItems.map((item, index) => (
     <ListItem
       index={index}
       itemContent={item}
@@ -103,7 +123,7 @@ export function List({
     />
   ));
 
-  const completedItems = completedListItems.map((item, index) => (
+  const completedItems = showCompleted && completedListItems.map((item, index) => (
     <ListItem
       index={index}
       itemContent={item}
@@ -121,6 +141,7 @@ export function List({
       </ul>
       <Footer
         itemCount={listItems.length}
+        completedItemCount={completedListItems.length}
         itemText={targetItem}
       />
     </>

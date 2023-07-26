@@ -7,8 +7,8 @@ export interface ListItemCollection {
   updateItem: (indexItemToUpdate: number, updatedContent: string) => void;
   undoAddItem: () => void;
   undoUpdateItem: () => void;
-  completeItem: (itemIndexToRemove: number) => void;
-  undoCompleteItem: () => void;
+  completeItem: (itemIndex: number) => void;
+  undoCompleteItem: (completeItemIndex: number) => void;
 }
 
 const ListItems = (initialItems: string[] = []): ListItemCollection => {
@@ -21,15 +21,18 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
 
   return {
 
-    completeItem: (itemIndexToRemove: number) => {
-      const itemToComplete = activeItems.find((x, index) => index === itemIndexToRemove) || '';
+    completeItem: (itemIndex: number) => {
+      const itemToComplete = activeItems.find((x, index) => index === itemIndex) || '';
       if(itemToComplete === '') return;
-      activeItems = activeItems.filter((x, index) => index !== itemIndexToRemove);
-      completedItems = [...completedItems, itemToComplete];
+      activeItems = activeItems.filter((x, index) => index !== itemIndex);
+      completedItems = [itemToComplete, ...completedItems];
     },
 
-    undoCompleteItem: () => {
-      activeItems = previousActiveItems;
+    undoCompleteItem: (completeItemIndex: number) => {
+      const itemToMakeActive = completedItems.find((x, index) => index === completeItemIndex) || '';
+      if(itemToMakeActive === '') return;
+      activeItems = [itemToMakeActive, ...activeItems];
+      completedItems = completedItems.filter((x, index) => index !== completeItemIndex);
     },
 
     addItem: (item: string) => {
@@ -39,7 +42,6 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
     getItems: (): string[] => {
       console.log(activeItems);
       return activeItems;
-      // return [...activeItems, ...completedItems];
     },
     getCompletedItems: (): string[] => {
       console.log(completedItems);

@@ -20,7 +20,8 @@ export type EditItemMessage = {
 export enum UndoType {
   EDIT = "EDIT",
   ADD = "ADD",
-  REMOVE = "REMOVE"
+  REMOVE = "REMOVE",
+  COMPLETE = "COMPLETE"
 }
 export type UndoItemMeessage = {
   UndoAction: UndoType;
@@ -31,3 +32,8 @@ export type UndoItemMeessage = {
 export type CompleteItemMessage = {
   targetIndex: number;
 };
+
+export type ShowItemMessage = {
+  type: 'Active' | 'Completed' | 'All';
+  shouldShow: boolean;
+}
