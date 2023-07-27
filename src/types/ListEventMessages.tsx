@@ -37,3 +37,7 @@ export type ShowItemMessage = {
   type: 'Active' | 'Completed' | 'All';
   shouldShow: boolean;
 }
+
+export type RemoveCompletedItemMessage = {
+  itemType: 'Completed' | 'Active';
+}

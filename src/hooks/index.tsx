@@ -8,7 +8,7 @@ import {
   UpdateItemMessage,
   CompleteItemMessage
 } from "../types";
-import { ShowItemMessage } from "../types/ListEventMessages";
+import { RemoveCompletedItemMessage, ShowItemMessage } from "../types/ListEventMessages";
 
 export function createUseItemMessageStream<T>(
   identifyMessageFun: (x: T) => boolean
@@ -75,6 +75,12 @@ export const isShowItemMessage = (x: ShowItemMessage) =>
 export const useShowItemStream = createUseItemMessageStream<
   ShowItemMessage
 >(isShowItemMessage);
+
+export const isRemoveCompletedItemMessage = (x: RemoveCompletedItemMessage) =>
+  typeof x?.itemType !== 'undefined' && x.itemType === "Completed";
+export const useRemoveCompltedItemStream = createUseItemMessageStream<
+  RemoveCompletedItemMessage
+>(isRemoveCompletedItemMessage);
 
 export { useMessageStream } from "./useMessageStream";
 // export { useAddItemStream } from "./useAddItemStream";

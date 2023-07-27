@@ -4,7 +4,8 @@ import {
   useUpdateItemStream,
   useUndoItemStream,
   useAddItemStream,
-  useShowItemStream
+  useShowItemStream,
+  useRemoveCompltedItemStream
 } from "../../hooks";
 
 import { UndoType } from "../../types";
@@ -71,12 +72,16 @@ export function Footer({
     if(type === 'Completed') setShowItem({type: type, shouldShow: !showCompleted})
   }
 
+  const [clearAllCompleted] = useRemoveCompltedItemStream();
+
   return (
     <>
       <div>
         <a href="#" onClick={toggleActive('All')}>All </a><span> | </span> 
         <a href="#" onClick={toggleActive('Active')}>Active: {itemCount} </a> <span> | </span> 
         <a href="#" onClick={toggleActive('Completed')}> Completed: {completedItemCount}</a>
+        <a href="#" onClick={() =>clearAllCompleted({itemType: 'Completed'})}> Clear completed</a>
+
       </div>
       {showUndoPrompt ? (
         <div>

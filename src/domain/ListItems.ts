@@ -9,6 +9,7 @@ export interface ListItemCollection {
   undoUpdateItem: () => void;
   completeItem: (itemIndex: number) => void;
   undoCompleteItem: (completeItemIndex: number) => void;
+  removeCompletedItems: () => void;
 }
 
 const ListItems = (initialItems: string[] = []): ListItemCollection => {
@@ -18,6 +19,17 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
   let previousCompletedItems: string[] = [];
 
   console.log("ran constructor? ${items}", activeItems);
+
+  const removeActiveItem= (itemIndexToRemove: number) => {
+    previousActiveItems = [...activeItems];
+    activeItems = activeItems.filter((x, index) => index !== itemIndexToRemove);
+  };
+
+  const removeCompletedItem= (itemIndexToRemove: number) => {
+    previousCompletedItems = [...completedItems];
+    completedItems = completedItems.filter((x, index) => index !== itemIndexToRemove);
+
+  }
 
   return {
 
@@ -50,6 +62,10 @@ const ListItems = (initialItems: string[] = []): ListItemCollection => {
     removeItem: (itemIndexToRemove: number) => {
       previousActiveItems = [...activeItems];
       activeItems = activeItems.filter((x, index) => index !== itemIndexToRemove);
+    },
+    removeCompletedItems: () => {
+        previousCompletedItems = [...completedItems];
+        completedItems = [];
     },
     undoRemoveLastItem: () => {
       activeItems = previousActiveItems;

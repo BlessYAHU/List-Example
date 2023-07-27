@@ -10,7 +10,8 @@ import {
   useAddItemStream,
   useUpdateItemStream,
   useCompleteItemStream,
-  useShowItemStream
+  useShowItemStream,
+  useRemoveCompltedItemStream
 } from "../../hooks";
 import { UndoType } from "../../types";
 
@@ -76,7 +77,11 @@ export function List({
     cancelUndo();
     listItemDomain.addItem(x.itemContent);
     setTargetItem(x.itemContent);
-    // setListItems(listItemDomain.getItems());
+    setItems();
+  });
+
+  useRemoveCompltedItemStream((x) => {
+    listItemDomain.removeCompletedItems();
     setItems();
   });
 
